@@ -1,2 +1,2 @@
 # parking-control
-api rest  reponsavel to control a park apartment complex.
+api rest  responsible for controlling the parking spot
