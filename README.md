@@ -1,2 +1,2 @@
 # parking-control
-api rest  responsible for controlling the parking spot
+rest API responsible for controlling the parking spot
