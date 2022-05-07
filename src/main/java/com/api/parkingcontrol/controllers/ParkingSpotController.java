@@ -3,6 +3,9 @@ package com.api.parkingcontrol.controllers;
 import com.api.parkingcontrol.dtos.ParkingSpotDto;
 import com.api.parkingcontrol.models.ParkingSpotModel;
 import com.api.parkingcontrol.services.ParkingSpotService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.info.Info;
 import org.apache.coyote.Response;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -24,6 +27,7 @@ import java.util.UUID;
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/parking-spot")
+@OpenAPIDefinition(info = @Info(title = "ParkSpot API", version = "1.0", description = "REST API responsible to control Parking Spot."))
 public class ParkingSpotController {
     final ParkingSpotService parkingSpotService;
 
@@ -32,6 +36,7 @@ public class ParkingSpotController {
     }
 
     @PostMapping
+    @Operation(summary = "Register an occupied parking lot")
     public ResponseEntity<Object> saveParkingSpot(@RequestBody @Valid ParkingSpotDto parkingSpotDto) {
 
         if(parkingSpotService.existsByLicensePlateCar(parkingSpotDto.getLicensePlateCar())){
@@ -43,18 +48,20 @@ public class ParkingSpotController {
         if(parkingSpotService.existsByApartmentAndBlock(parkingSpotDto.getApartment(),parkingSpotDto.getBlock())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Parking Spot is already registered for this apartment/block!");
         }
-        var parkingSpotModel = new ParkingSpotModel();
+        ParkingSpotModel parkingSpotModel = new ParkingSpotModel();
         BeanUtils.copyProperties(parkingSpotDto, parkingSpotModel);
         parkingSpotModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
         return ResponseEntity.status(HttpStatus.CREATED).body(parkingSpotService.save(parkingSpotModel));
     }
 
     @GetMapping
+    @Operation(summary = "Return a parking spot list")
     public ResponseEntity<Page<ParkingSpotModel>> getAllParkingSpots(@PageableDefault(page = 0,size = 10,sort = "id",direction = Sort.Direction.ASC)Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(parkingSpotService.findAll(pageable));
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Return a parking spot by ID")
     public ResponseEntity<Object> getOneParkingSpot(@PathVariable(value= "id")UUID id){
         Optional<ParkingSpotModel> parkingSpotModelOptional = parkingSpotService.findById(id);
         if(!parkingSpotModelOptional.isPresent()){
@@ -64,6 +71,7 @@ public class ParkingSpotController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a parking spot by ID")
     public ResponseEntity<Object> deleteParkingSpot(@PathVariable(value = "id") UUID id){
         Optional<ParkingSpotModel> parkingSpotModelOptional = parkingSpotService.findById(id);
         if(!parkingSpotModelOptional.isPresent()){
@@ -74,28 +82,15 @@ public class ParkingSpotController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update a parking spot by ID")
     public ResponseEntity<Object> updateParkingSpot(@PathVariable(value = "id") UUID id, @RequestBody @Valid ParkingSpotDto parkingSpotDto){
         Optional<ParkingSpotModel> parkingSpotModelOptional = parkingSpotService.findById(id);
         if(!parkingSpotModelOptional.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found");
         }
 
-       // MODO 1 UPDATE
-        /**
-            var parkingSpotModel = parkingSpotModelOptional.get();
-            parkingSpotModel.setParkingSpotNumber(parkingSpotDto.getParkingSpotNumber());
-            parkingSpotModel.setLicensePlateCar(parkingSpotDto.getLicensePlateCar());
-            parkingSpotModel.setBrandCar(parkingSpotDto.getBrandCar());
-            parkingSpotModel.setModelCar(parkingSpotModel.getModelCar());
-            parkingSpotModel.setResponsibleName(parkingSpotDto.getResponsibleName());
-            parkingSpotModel.setApartment(parkingSpotDto.getApartment());
-            parkingSpotModel.setBlock(parkingSpotDto.getBlock());
-
-            return ResponseEntity.status(HttpStatus.OK).body(parkingSpotService.save(parkingSpotModel));
-        **/
-
-        //MODO 2 UPDATE
-        var parkingSpotModel = new ParkingSpotModel();
+       
+        ParkingSpotModel parkingSpotModel = new ParkingSpotModel();
         BeanUtils.copyProperties(parkingSpotDto,parkingSpotModel);
         parkingSpotModel.setId(parkingSpotModelOptional.get().getId());
         parkingSpotModel.setRegistrationDate(parkingSpotModelOptional.get().getRegistrationDate());
