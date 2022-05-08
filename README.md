@@ -3,9 +3,11 @@
 > Status: Completed ✅
 
 ### It's a REST API responsible for controlling the parking spot of an apartment condominium.
+
 <h1 align="center">
-  <img alt="Readme" title="Readme" src="./github/Readme-gif.gif"/>
+  <img alt="Readme" title="Readme" src="https://user-images.githubusercontent.com/87916631/167315852-975b4a36-c428-4504-8137-843aeb344521.gif"/>
 </h1>
+
 
 ## Fields of ParkingSpotModel are:
 + id
