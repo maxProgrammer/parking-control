@@ -5,7 +5,7 @@
 ### It's a REST API responsible for controlling the parking spot of an apartment condominium.
 
 ## Try clicking on the link below.
-<a href="https://maxprogrammer-parking-control.herokuapp.com/swagger-ui.html" target="_blank" rel="noopener noreferrer">ParkingSpot Controller</a>
+<a onclick="window.open(this.href,'_blank');return false;" href="https://maxprogrammer-parking-control.herokuapp.com/swagger-ui.html">ParkingSpot Controller</a>
 
 ## Fields of ParkingSpotModel are:
 + id
