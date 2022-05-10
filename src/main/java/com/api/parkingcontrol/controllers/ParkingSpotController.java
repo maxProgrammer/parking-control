@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
 import org.apache.coyote.Response;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,11 +30,8 @@ import java.util.UUID;
 @RequestMapping("/parking-spot")
 @OpenAPIDefinition(info = @Info(title = "ParkSpot API", version = "1.0", description = "REST API responsible to control Parking Spot."))
 public class ParkingSpotController {
-    final ParkingSpotService parkingSpotService;
-
-    public ParkingSpotController(ParkingSpotService parkingSpotService) {
-        this.parkingSpotService = parkingSpotService;
-    }
+   @Autowired
+   ParkingSpotService parkingSpotService;
 
     @PostMapping
     @Operation(summary = "Register an occupied parking lot")
